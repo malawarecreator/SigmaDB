@@ -1,6 +1,10 @@
 
 pub mod db {
+  
     use std::{any::Any, fmt::Debug, mem};
+    use std::io::{self, BufWriter, Write};
+    use std::fs::File;
+    
     #[derive(Debug)]
     pub struct data_block {
         key: &'static str,
@@ -25,13 +29,24 @@ pub mod db {
     }
 
     impl data_block {
-        fn new(&self, key: &'static str, value: &'static str) -> data_block {
+        pub fn new(&self, key: &'static str, value: &'static str) -> data_block {
             Self {key: key, value: value}
         }
     }
     impl db {
-        fn new(&self, id: &'static str, data: [data_block; 50]) -> db {
+        pub fn new(&self, id: &'static str, data: [data_block; 50]) -> db {
             Self {id: id, data: data}
+        }
+        pub fn write_out(&self, path: &str) {
+            let mut file = File::create(path).expect("invalid file path");
+            let mut writer = BufWriter::new(file);
+            for i in 0..mem::size_of_val(&self.data) - 1 {
+                writeln!(writer, "Key: {} Value: {}", self.data[i].key, self.data[i].value).expect("err writing to file");
+
+            }
+            
+            
+            
         }
     }
     pub fn db_add_data(mut db: db, datablock: data_block)  {
