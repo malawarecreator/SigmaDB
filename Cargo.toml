@@ -2,5 +2,8 @@
 name = "sigma_db"
 version = "0.0.1"
 edition = "2024"
+description = "rust database library"
+license = "GPL"
 
 [dependencies]
+
