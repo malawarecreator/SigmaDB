@@ -13,7 +13,8 @@ pub mod db {
     #[derive(Debug)]
     pub struct db {
         id: &'static str,
-        data: [data_block; 50],
+        data: [Option<data_block>; 50],
+        current_pos: usize,
     }
 
     impl std::fmt::Display for data_block {
@@ -29,35 +30,54 @@ pub mod db {
     }
 
     impl data_block {
-        pub fn new(&self, key: &'static str, value: &'static str) -> data_block {
+        pub fn new(key: &'static str, value: &'static str) -> data_block {
             Self {key: key, value: value}
         }
+        
     }
     impl db {
-        pub fn new(&self, id: &'static str, data: [data_block; 50]) -> db {
-            Self {id: id, data: data}
+        pub fn new(id: &'static str) -> db {
+            
+            Self {id: id , data: std::array::from_fn(|_| None ), current_pos: 0}
         }
         pub fn write_out(&self, path: &str) {
             let mut file = File::create(path).expect("invalid file path");
             let mut writer = BufWriter::new(file);
-            for i in 0..mem::size_of_val(&self.data) - 1 {
-                writeln!(writer, "Key: {} Value: {}", self.data[i].key, self.data[i].value).expect("err writing to file");
-
+            for i in 0..self.data.len() {
+                if let Some(data_block) = &self.data[i] {
+                    writeln!(writer, "Key: {} Value: {}", data_block.key, data_block.value)
+                        .expect("err writing to file");
+                }
             }
-            
-            
-            
         }
     }
-    pub fn db_add_data(mut db: db, datablock: data_block)  {
-        let size = mem::size_of_val(&db.data);
-        db.data[size] = datablock;
+    pub fn db_add_data(db: &mut db, datablock: data_block)  {
+        if db.current_pos < db.data.len() {
+            db.data[db.current_pos]  = Some(datablock);
+            db.current_pos += 1;
+        } else {
+            println!("DB full");
+        }
+        
+        
 
+    }
+    pub fn db_read(db: &db, key: &'static str) -> Option<&'static str> {
+        for i in 0..db.data.len() {
+            if let Some(data_block) = &db.data[i] {
+                if data_block.key == key {
+                    return Some(data_block.value); 
+                }
+            }
+        }
+        None 
     }
     pub fn db_empty(mut db: db) {
         for i in 0..db.data.len() - 1 {
-            db.data[i].key = "";
-            db.data[i].value = "";
+            if let Some(data_block) = &mut db.data[i] {
+                data_block.key = "";
+                data_block.value = ""; 
+            }
         }
         println!("new db: {}", db);
     }
