@@ -1,6 +1,6 @@
 [package]
 name = "sigma_db"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2024"
 description = "rust database library. documentation at https://malawarecreator.github.io/sigmadb-doc"
 license = "MIT"

@@ -12,3 +12,5 @@
 - v0.0.2:
     - db_read method
     - bug fixes
+- v0.0.3:
+    - bug fixes
