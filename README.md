@@ -9,3 +9,6 @@
     - struct db
     - struct data_block
     - basic functionality
+- v0.0.2:
+    - db_read method
+    - bug fixes
