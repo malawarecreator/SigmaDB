@@ -4,6 +4,6 @@ version = "0.0.1"
 edition = "2024"
 description = "rust database library"
 license = "MIT"
-
+repository = "https://github.com/malawarecreator/SigmaDB"
 [dependencies]
 
